@@ -17,6 +17,27 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
 <body>
 <div class="container py-4">
     <h2 class="mb-4 text-center">🛠️ لوحة التحكم</h2>
+
+    <!-- Card لإضافة/تحديث منتج -->
+    <div class="card p-3 mb-4 shadow-sm">
+        <h5>➕ إضافة أو تعديل منتج</h5>
+        <div class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <input id="pname" class="form-control" placeholder="اسم المنتج">
+            </div>
+            <div class="col-md-3">
+                <input id="pprice" type="number" class="form-control" placeholder="السعر">
+            </div>
+            <div class="col-md-3">
+                <input id="pid" type="hidden">
+                <button class="btn btn-primary w-100" onclick="saveProduct()">💾 حفظ</button>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-warning w-100" onclick="clearForm()">🧹 مسح الحقول</button>
+            </div>
+        </div>
+    </div>
+
     <!-- جدول المنتجات -->
     <div class="card p-3 shadow-sm">
         <h5>📦 قائمة المنتجات</h5>
@@ -26,7 +47,8 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
                     <th>الاسم</th>
                     <th>السعر</th>
                     <th>QR Code</th>
-                    <th>تحميل QR</th>
+                    <th>تنزيل QR</th>
+                    <th>تعديل</th>
                     <th>حذف</th>
                 </tr>
             </thead>
@@ -36,31 +58,16 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
 </div>
 
 <script>
- window.APP_DATA = {
-  settings: {
-    discount: 25,               // نسبة الخصم
-    expire: "2026-01-31"        // تاريخ الانتهاء
-  },
-
+let APP_DATA = {
+  settings: { discount: 25, expire: "2026-01-31" },
   products: {
     1: { name: "منتج 1", price: 100 },
     2: { name: "منتج 2", price: 200 },
-    3: { name: "منتج 3", price: 300 },
-    4: {name : "منتج 4" , price:400},
-    5: {name : "منتج 5" , price:500},
-    6: {name : "منتج 6" , price:600},
-    7: {name : "منتج 7" , price:700},
-    8: {name : "منتج 8" , price:800},
-    9: {name : "منتج 9" , price:900},
-    10: {name : "منتج 10" , price:1000}
-    
-    
+    3: { name: "منتج 3", price: 300 }
   }
 };
-   
-</script>
-<script>
-let products = {...window.APP_DATA.products}; // نسخ البيانات
+
+let products = {...APP_DATA.products};
 
 function render() {
     const table = document.getElementById("productsTable");
@@ -76,27 +83,57 @@ function render() {
             <td>${p.price} جنيه</td>
             <td class="qr-cell" id="qr${id}"></td>
             <td>
-                <button class="btn btn-sm btn-secondary download-btn" onclick="downloadQR(${id})">⬇️ تحميل</button>
+                <button class="btn btn-sm btn-secondary download-btn" onclick="downloadQR(${id})">⬇️ تنزيل</button>
             </td>
             <td>
-                <button class="btn btn-sm btn-danger" onclick="del(${id})">حذف</button>
+                <button class="btn btn-sm btn-info" onclick="editProduct(${id})">✏️ تعديل</button>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger" onclick="deleteProduct(${id})">🗑️ حذف</button>
             </td>
         `;
-
         table.appendChild(tr);
 
-        // توليد QR
         new QRCode(document.getElementById("qr"+id), {
             text: "https://yousef270902.github.io/discount-qr/discount.html?product=" + id,
-            width: 30,
-            height: 30
+            width: 50,
+            height: 50
         });
     }
 }
 
+function saveProduct() {
+    const name = document.getElementById("pname").value.trim();
+    const price = document.getElementById("pprice").value;
+    const pid = document.getElementById("pid").value;
 
+    if(!name || !price){ alert("ادخل الاسم والسعر"); return; }
 
-function downloadQR(id) {
+    if(pid){ // تعديل
+        products[pid] = { name, price };
+    } else { // إضافة جديد
+        const newId = Date.now();
+        products[newId] = { name, price };
+    }
+
+    clearForm();
+    render();
+}
+
+function editProduct(id){
+    document.getElementById("pname").value = products[id].name;
+    document.getElementById("pprice").value = products[id].price;
+    document.getElementById("pid").value = id;
+}
+
+function deleteProduct(id){
+    if(confirm("هل تريد حذف هذا المنتج؟")){
+        delete products[id];
+        render();
+    }
+}
+
+function downloadQR(id){
     const qrImg = document.getElementById("qr"+id).querySelector("img");
     if(qrImg){
         const link = document.createElement("a");
@@ -105,14 +142,14 @@ function downloadQR(id) {
         link.click();
     }
 }
+
+function clearForm(){
+    document.getElementById("pname").value = "";
+    document.getElementById("pprice").value = "";
+    document.getElementById("pid").value = "";
+}
+
 render();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
