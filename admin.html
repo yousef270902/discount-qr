@@ -1,120 +1,42 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Admin Panel</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products Table</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-<style>
-body { background: #f8f9fa; font-family: Arial, sans-serif; }
-.card { border-radius: 15px; }
-.download-btn { margin-left: 5px; }
-.qr-cell { width: 130px; }
-</style>
 </head>
-
 <body>
-<div class="container py-4">
-    <h2 class="mb-4 text-center">🛠️ لوحة التحكم</h2>
-
-    
-    
-
-    <!-- جدول المنتجات -->
-    <div class="card p-3 shadow-sm">
-        <h5>📦 قائمة المنتجات</h5>
-        <table class="table table-bordered table-striped align-middle mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th>الاسم</th>
-                    <th>السعر</th>
-                    <th>QR Code</th>
-                    <th>تنزيل QR</th>
-                    <th>تعديل</th>
-                    <th>حذف</th>
-                </tr>
-            </thead>
-            <tbody id="productsTable"></tbody>
-        </table>
-    </div>
+<div class="container mt-5">
+  <h2 class="mb-4">قائمة المنتجات</h2>
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>الاسم</th>
+        <th>السعر</th>
+      </tr>
+    </thead>
+    <tbody id="productsTableBody">
+      <!-- Data will be inserted here -->
+    </tbody>
+  </table>
 </div>
 
 <script>
-let APP_DATA = {
-  settings: { discount: 25, expire: "2026-01-31" },
-  products: {
-    1: { name: "منتج 1", price: 100 },
-    2: { name: "منتج 2", price: 200 },
-    3: { name: "منتج 3", price: 300 }
-  }
-};
+// Example data
+const products = [
+  { name: "منتج 1", price: "100" },
+  { name: "منتج 2", price: "200" },
+  { name: "منتج 3", price: "300" }
+];
 
-let products = {...APP_DATA.products};
-
-function render() {
-    const table = document.getElementById("productsTable");
-    table.innerHTML = "";
-
-    for (let id in products) {
-        const p = products[id];
-
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-            <td>${p.name}</td>
-            <td>${p.price} جنيه</td>
-            <td class="qr-cell" id="qr${id}"></td>
-            <td>
-                <button class="btn btn-sm btn-secondary download-btn" onclick="downloadQR(${id})">⬇️ تنزيل</button>
-            </td>
-           
-        `;
-        table.appendChild(tr);
-
-        new QRCode(document.getElementById("qr"+id), {
-            text: "https://yousef270902.github.io/discount-qr/discount.html?product=" + id,
-            width: 50,
-            height: 50
-        });
-    }
-}
-
-function saveProduct() {
-    const name = document.getElementById("pname").value.trim();
-    const price = document.getElementById("pprice").value;
-    const pid = document.getElementById("pid").value;
-
-    if(!name || !price){ alert("ادخل الاسم والسعر"); return; }
-
-    if(pid){ // تعديل
-        products[pid] = { name, price };
-    } else { // إضافة جديد
-        const newId = Date.now();
-        products[newId] = { name, price };
-    }
-
-    clearForm();
-    render();
-}
-
-
-
-function downloadQR(id){
-    const qrImg = document.getElementById("qr"+id).querySelector("img");
-    if(qrImg){
-        const link = document.createElement("a");
-        link.href = qrImg.src;
-        link.download = products[id].name + "_QR.png";
-        link.click();
-    }
-}
-
-
-
-render();
+// Fill table
+const tableBody = document.getElementById("productsTableBody");
+products.forEach(p => {
+  const row = document.createElement("tr");
+  row.innerHTML = `<td>${p.name}</td><td>${p.price}</td>`;
+  tableBody.appendChild(row);
+});
 </script>
 </body>
 </html>
-
-
