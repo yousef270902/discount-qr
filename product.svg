@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="420" height="260"
+     viewBox="0 0 420 260"
+     xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Card Background -->
+  <rect x="0" y="0" width="420" height="260" rx="22" fill="#ffffff"/>
+  <rect x="0" y="0" width="420" height="260" rx="22" stroke="#dddddd" fill="none"/>
+
+  <!-- Product Name -->
+  <text id="productName"
+        x="210"
+        y="95"
+        text-anchor="middle"
+        font-size="26"
+        font-family="Arial"
+        fill="#000">
+    اسم المنتج
+  </text>
+
+  <!-- Discount Badge -->
+  <rect x="130" y="125" width="160" height="44" rx="22" fill="#198754"/>
+  <text id="discountText"
+        x="210"
+        y="155"
+        text-anchor="middle"
+        font-size="20"
+        font-family="Arial"
+        fill="#ffffff">
+    خصم 0%
+  </text>
+
+  <!-- Footer -->
+  <text x="210" y="205"
+        text-anchor="middle"
+        font-size="14"
+        font-family="Arial"
+        fill="#777">
+    عرض خاص
+  </text>
+
+  <!-- JS -->
+  <script type="application/ecmascript">
+    <![CDATA[
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get("name") || "منتج";
+    const discount = params.get("discount") || "0";
+
+    document.getElementById("productName").textContent = name;
+    document.getElementById("discountText").textContent = "خصم " + discount + "%";
+  ]]></script>
+
+</svg>
