@@ -2,48 +2,123 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Admin</title>
+<title>Admin Panel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<style>
+body { background: #f8f9fa; font-family: Arial, sans-serif; }
+.card { border-radius: 15px; }
+.download-btn { margin-left: 5px; }
+.qr-cell { width: 130px; }
+</style>
 </head>
 
-<body class="bg-light p-4">
+<body>
+<div class="container py-4">
+    <h2 class="mb-4 text-center">🛠️ لوحة التحكم</h2>
 
-<div class="container">
-<h3 class="mb-3">🛠️ Admin Panel</h3>
+    <!-- Card لإضافة منتج جديد -->
+    <div class="card p-3 mb-4 shadow-sm">
+        <h5>➕ إضافة منتج جديد</h5>
+        <div class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <input id="pname" class="form-control" placeholder="اسم المنتج">
+            </div>
+            <div class="col-md-4">
+                <input id="pprice" type="number" class="form-control" placeholder="السعر">
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100" onclick="addProduct()">إضافة</button>
+            </div>
+        </div>
+    </div>
 
-<div id="products"></div>
+    <!-- جدول المنتجات -->
+    <div class="card p-3 shadow-sm">
+        <h5>📦 قائمة المنتجات</h5>
+        <table class="table table-bordered table-striped align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>الاسم</th>
+                    <th>السعر</th>
+                    <th>QR Code</th>
+                    <th>تحميل QR</th>
+                    <th>حذف</th>
+                </tr>
+            </thead>
+            <tbody id="productsTable"></tbody>
+        </table>
+    </div>
 </div>
 
 <script src="data.js"></script>
 <script>
-const productsDiv = document.getElementById("products");
+let products = {...window.APP_DATA.products};
 
-for (let id in APP_DATA.products) {
-    const p = APP_DATA.products[id];
+function render() {
+    const table = document.getElementById("productsTable");
+    table.innerHTML = "";
 
-    const card = document.createElement("div");
-    card.className = "card p-3 mb-3";
+    for (let id in products) {
+        const p = products[id];
 
-    card.innerHTML = `
-        <b>${p.name}</b> - ${p.price} جنيه
-        <div id="qr${id}" class="mt-2"></div>
-        <small class="text-muted">QR Link: /discount-qr/discount.html?product=${id}</small>
-    `;
+        const tr = document.createElement("tr");
 
-    productsDiv.appendChild(card);
+        tr.innerHTML = `
+            <td>${p.name}</td>
+            <td>${p.price} جنيه</td>
+            <td class="qr-cell" id="qr${id}"></td>
+            <td>
+                <button class="btn btn-sm btn-secondary download-btn" onclick="downloadQR(${id})">⬇️ تحميل</button>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger" onclick="del(${id})">حذف</button>
+            </td>
+        `;
 
-    new QRCode(document.getElementById("qr" + id), {
-        text: location.origin + " /discount-qr/discount.html?product=" + id,
-        width: 120,
-        height: 120
-    });
+        table.appendChild(tr);
+
+        // توليد QR
+        new QRCode(document.getElementById("qr"+id), {
+            text: "https://yousef270902.github.io/discount-qr/discount.html?product=" + id,
+            width: 120,
+            height: 120
+        });
+    }
 }
-</script>
 
+function addProduct() {
+    const name = document.getElementById("pname").value.trim();
+    const price = document.getElementById("pprice").value;
+
+    if (!name || !price) { alert("ادخل الاسم والسعر"); return; }
+
+    const id = Date.now();
+    products[id] = { name, price };
+    document.getElementById("pname").value = "";
+    document.getElementById("pprice").value = "";
+    render();
+}
+
+function del(id) {
+    if(confirm("هل تريد حذف هذا المنتج؟")) {
+        delete products[id];
+        render();
+    }
+}
+
+function downloadQR(id) {
+    const qrImg = document.getElementById("qr"+id).querySelector("img");
+    if(qrImg){
+        const link = document.createElement("a");
+        link.href = qrImg.src;
+        link.download = products[id].name + "_QR.png";
+        link.click();
+    }
+}
+
+render();
+</script>
 </body>
 </html>
-
-
-
