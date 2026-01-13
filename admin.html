@@ -17,28 +17,6 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
 <body>
 <div class="container py-4">
     <h2 class="mb-4 text-center">🛠️ لوحة التحكم</h2>
-
-    <!-- زر Export Data.js -->
-    <div class="mb-3 text-center">
-        <button class="btn btn-success" onclick="exportData()">💾 Export Data.js</button>
-    </div>
-
-    <!-- Card لإضافة منتج جديد -->
-    <div class="card p-3 mb-4 shadow-sm">
-        <h5>➕ إضافة منتج جديد</h5>
-        <div class="row g-2 align-items-center">
-            <div class="col-md-5">
-                <input id="pname" class="form-control" placeholder="اسم المنتج">
-            </div>
-            <div class="col-md-4">
-                <input id="pprice" type="number" class="form-control" placeholder="السعر">
-            </div>
-            <div class="col-md-3">
-                <button class="btn btn-primary w-100" onclick="addProduct()">إضافة</button>
-            </div>
-        </div>
-    </div>
-
     <!-- جدول المنتجات -->
     <div class="card p-3 shadow-sm">
         <h5>📦 قائمة المنتجات</h5>
@@ -93,25 +71,7 @@ function render() {
     }
 }
 
-function addProduct() {
-    const name = document.getElementById("pname").value.trim();
-    const price = document.getElementById("pprice").value;
 
-    if (!name || !price) { alert("ادخل الاسم والسعر"); return; }
-
-    const id = Date.now();
-    products[id] = { name, price };
-    document.getElementById("pname").value = "";
-    document.getElementById("pprice").value = "";
-    render();
-}
-
-function del(id) {
-    if(confirm("هل تريد حذف هذا المنتج؟")) {
-        delete products[id];
-        render();
-    }
-}
 
 function downloadQR(id) {
     const qrImg = document.getElementById("qr"+id).querySelector("img");
@@ -122,21 +82,11 @@ function downloadQR(id) {
         link.click();
     }
 }
-
-// وظيفة Export Data.js لتحديث GitHub
-function exportData() {
-    const dataStr = "window.APP_DATA = " + JSON.stringify({settings: window.APP_DATA.settings, products: products}, null, 2) + ";";
-    const blob = new Blob([dataStr], {type: "text/javascript"});
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "data.js";
-    link.click();
-}
-
 render();
 </script>
 </body>
 </html>
+
 
 
 
