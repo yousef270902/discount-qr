@@ -29,13 +29,13 @@ for (let id in APP_DATA.products) {
     card.innerHTML = `
         <b>${p.name}</b> - ${p.price} جنيه
         <div id="qr${id}" class="mt-2"></div>
-        <small class="text-muted">QR Link: discount-qr/discount.html?product=${id}</small>
+        <small class="text-muted">QR Link: /discount-qr/discount.html?product=${id}</small>
     `;
 
     productsDiv.appendChild(card);
 
     new QRCode(document.getElementById("qr" + id), {
-        text: location.origin + "/discount.html?product=" + id,
+        text: location.origin + "/discount-qr/discount.html?product=" + id,
         width: 120,
         height: 120
     });
@@ -44,4 +44,5 @@ for (let id in APP_DATA.products) {
 
 </body>
 </html>
+
 
