@@ -35,7 +35,7 @@ for (let id in APP_DATA.products) {
     productsDiv.appendChild(card);
 
     new QRCode(document.getElementById("qr" + id), {
-        text: location.origin + "/discount-qr/discount.html?product=" + id,
+        text: location.origin + " /discount-qr/discount.html?product=" + id,
         width: 120,
         height: 120
     });
@@ -44,5 +44,6 @@ for (let id in APP_DATA.products) {
 
 </body>
 </html>
+
 
 
