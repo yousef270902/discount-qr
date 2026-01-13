@@ -18,25 +18,8 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
 <div class="container py-4">
     <h2 class="mb-4 text-center">🛠️ لوحة التحكم</h2>
 
-    <!-- Card لإضافة/تحديث منتج -->
-    <div class="card p-3 mb-4 shadow-sm">
-        <h5>➕ إضافة أو تعديل منتج</h5>
-        <div class="row g-2 align-items-center">
-            <div class="col-md-4">
-                <input id="pname" class="form-control" placeholder="اسم المنتج">
-            </div>
-            <div class="col-md-3">
-                <input id="pprice" type="number" class="form-control" placeholder="السعر">
-            </div>
-            <div class="col-md-3">
-                <input id="pid" type="hidden">
-                <button class="btn btn-primary w-100" onclick="saveProduct()">💾 حفظ</button>
-            </div>
-            <div class="col-md-2">
-                <button class="btn btn-warning w-100" onclick="clearForm()">🧹 مسح الحقول</button>
-            </div>
-        </div>
-    </div>
+    
+    
 
     <!-- جدول المنتجات -->
     <div class="card p-3 shadow-sm">
@@ -85,12 +68,7 @@ function render() {
             <td>
                 <button class="btn btn-sm btn-secondary download-btn" onclick="downloadQR(${id})">⬇️ تنزيل</button>
             </td>
-            <td>
-                <button class="btn btn-sm btn-info" onclick="editProduct(${id})">✏️ تعديل</button>
-            </td>
-            <td>
-                <button class="btn btn-sm btn-danger" onclick="deleteProduct(${id})">🗑️ حذف</button>
-            </td>
+           
         `;
         table.appendChild(tr);
 
@@ -120,18 +98,7 @@ function saveProduct() {
     render();
 }
 
-function editProduct(id){
-    document.getElementById("pname").value = products[id].name;
-    document.getElementById("pprice").value = products[id].price;
-    document.getElementById("pid").value = id;
-}
 
-function deleteProduct(id){
-    if(confirm("هل تريد حذف هذا المنتج؟")){
-        delete products[id];
-        render();
-    }
-}
 
 function downloadQR(id){
     const qrImg = document.getElementById("qr"+id).querySelector("img");
@@ -143,14 +110,11 @@ function downloadQR(id){
     }
 }
 
-function clearForm(){
-    document.getElementById("pname").value = "";
-    document.getElementById("pprice").value = "";
-    document.getElementById("pid").value = "";
-}
+
 
 render();
 </script>
 </body>
 </html>
+
 
