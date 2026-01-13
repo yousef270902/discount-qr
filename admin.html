@@ -3,17 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Products Table</title>
+<title>قائمة المنتجات مع QR</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<script src="data.js"></script>
+<style>
+.qr-cell { width: 100px; text-align: center; }
+</style>
 </head>
 <body>
 <div class="container mt-5">
-  <h2 class="mb-4">قائمة المنتجات</h2>
+  <h2 class="mb-4">قائمة المنتجات مع QR</h2>
   <table class="table table-bordered table-striped">
     <thead class="table-dark">
       <tr>
         <th>الاسم</th>
         <th>السعر</th>
+        <th>QR Code</th>
       </tr>
     </thead>
     <tbody id="productsTableBody">
@@ -23,19 +29,39 @@
 </div>
 
 <script>
-// Example data
-const products = [
-  { name: "منتج 1", price: "100" },
-  { name: "منتج 2", price: "200" },
-  { name: "منتج 3", price: "300" }
-];
-
-// Fill table
+// Fill table from APP_DATA
 const tableBody = document.getElementById("productsTableBody");
-products.forEach(p => {
+const products = window.APP_DATA.products;
+
+Object.keys(products).forEach((id, index) => {
+  const p = products[id];
   const row = document.createElement("tr");
-  row.innerHTML = `<td>${p.name}</td><td>${p.price}</td>`;
+
+  // Name and Price cells
+  const nameCell = document.createElement("td");
+  nameCell.textContent = p.name;
+  
+  const priceCell = document.createElement("td");
+  priceCell.textContent = p.price + " جنيه";
+
+  // QR code cell
+  const qrCell = document.createElement("td");
+  qrCell.classList.add("qr-cell");
+  const qrDiv = document.createElement("div");
+  qrDiv.id = "qrcode-" + id;
+  qrCell.appendChild(qrDiv);
+
+  row.appendChild(nameCell);
+  row.appendChild(priceCell);
+  row.appendChild(qrCell);
   tableBody.appendChild(row);
+
+  // Generate QR code pointing to discount page
+  new QRCode(qrDiv, {
+    text: `/discount-qr/discount.html?product=${id}`,
+    width: 80,
+    height: 80
+  });
 });
 </script>
 </body>
